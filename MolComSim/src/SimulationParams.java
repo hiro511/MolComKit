@@ -16,9 +16,9 @@ public class SimulationParams {
 	private int mediumWidth = 100;
 	private int mediumHeight = 100;
 	private String outputFileName = null;
-	private ArrayList<NanoMachineParam> transmitterParams = new ArrayList<>();
-	private ArrayList<NanoMachineParam> receiverParams = new ArrayList<>();
-	private ArrayList<IntermediateNodeParam> intermediateNodeParams = new ArrayList<>();
+	private ArrayList<NanoMachineParam> transmitterParams = new ArrayList<NanoMachineParam>();
+	private ArrayList<NanoMachineParam> receiverParams = new ArrayList<NanoMachineParam>();
+	private ArrayList<IntermediateNodeParam> intermediateNodeParams = new ArrayList<IntermediateNodeParam>();
 	private ArrayList<MicrotubuleParams> microtubuleParams = new ArrayList<MicrotubuleParams>();
 	private int numMessages = 1;
 	private int maxNumSteps = 100000;

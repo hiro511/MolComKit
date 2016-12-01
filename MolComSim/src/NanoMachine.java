@@ -174,7 +174,7 @@ public class NanoMachine {
 		
 		// for intermediate nodes, track the messages we have retransmitted so we 
 		// do not retransmit the same message multiple times.
-		private ArrayList<Integer> msgsRetransmitted = new ArrayList<>();
+		private ArrayList<Integer> msgsRetransmitted = new ArrayList<Integer>();
 		
 		// To track communication status for adaptive change
 		private int lastCommunicationStatus = NO_PREVIOUS_COMMUNICATION; // TODO: should really be an enumerated type
@@ -302,7 +302,7 @@ public class NanoMachine {
 
 		// for intermediate nodes, track the messages we have retransmitted so we 
 		// do not retransmit the same message multiple times.
-		private ArrayList<Integer> msgsRetransmitted = new ArrayList<>();
+		private ArrayList<Integer> msgsRetransmitted = new ArrayList<Integer>();
 
 		// To track communication status for adaptive change
 		private int lastCommunicationStatus = NO_PREVIOUS_COMMUNICATION;
