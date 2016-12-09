@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+import com.sun.org.apache.xpath.internal.axes.SelfIteratorNoPredicate;
+
 /** Stores the parameters needed
  * to create a particular type of molecule
  *
@@ -7,20 +9,28 @@ import java.util.Scanner;
 
 public class MoleculeParams {
 
+	private int radius;
 	private int numMolecules;
 	private MoleculeType moleculeType;
 	private MoleculeMovementType moleculeMovementType = SimulationParams.getMovementDefault(moleculeType);
 	private int adaptiveChange = 0; // default is no adaptive change.  Amount to adjust num mols based
 									// on comm success/failure.
+	private static final int DEFAULT_MOLECULE_RADIUS = 2;
 
-	public MoleculeParams(MoleculeType mType, MoleculeMovementType mMovementType, int numMols, int adaptiveChange) {
+	public MoleculeParams(int radius, MoleculeType mType, MoleculeMovementType mMovementType, int numMols, int adaptiveChange) {
+		this.radius = radius;
 		this.numMolecules = numMols;
 		this.moleculeMovementType = mMovementType;
 		this.moleculeType = mType;
 		this.adaptiveChange = adaptiveChange;
 	}
+	
+	public MoleculeParams(MoleculeType mType, MoleculeMovementType mMovementType, int numMols, int adaptiveChange) {
+		this(DEFAULT_MOLECULE_RADIUS, mType, mMovementType, numMols, adaptiveChange);
+	}
 
 	public MoleculeParams(Scanner readParams) {
+		radius = readParams.nextInt();
 		numMolecules = readParams.nextInt();
 		moleculeType = MoleculeType.getMoleculeType(readParams.next());
 		if(readParams.hasNext()) { // could be either a movement type or an amount of adaptive change
@@ -31,6 +41,10 @@ public class MoleculeParams {
 				adaptiveChange = readParams.nextInt();
 			}
 		} 
+	}
+	
+	public int getRadius() {
+		return radius;
 	}
 
 	public int getNumMolecules() {

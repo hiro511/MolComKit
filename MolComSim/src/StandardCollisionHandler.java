@@ -22,10 +22,17 @@ public class StandardCollisionHandler extends CollisionDecorator{
 	public Position handlePotentialCollisions(Molecule mol, Position nextPosition, MolComSim simulation) {
 		Position nextPos = collH.handlePotentialCollisions(mol, nextPosition, simulation);
 //		if (simulation.getMedium().isOccupied(nextPos)){
-		if (simulation.getMedium().hasMolecule(nextPos)){
+		if (simulation.getMedium().hasMolecule(nextPos, mol)){
 			return mol.getPosition();
 		}
-		 simulation.moveObject(mol, mol.getPosition(), nextPos);
+		
+		// TODO: check
+		if (mol instanceof Molecule) {
+			simulation.moveObject(mol, mol.getPosition(), nextPos, mol.getRadius());
+		}
+		else{
+			simulation.moveObject(mol, mol.getPosition(), nextPos);
+		}
 		 return nextPos;
 	}
 

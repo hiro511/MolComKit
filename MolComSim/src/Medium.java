@@ -91,6 +91,59 @@ public class Medium {
 		grid.get(pos).add(obj);
 	}
 	
+	// Add an object with a radius to the grid of objects 
+	public void addObject(Object obj, Position pos, int radius) {
+		Position center = pos;
+		// doubly nested loop to go over positions for all three dimensions.
+		// note that the center position is included, so we subtract one 
+		// from the radius, and go from -(radius - 1) to +(radius - 1) units 
+		// around the center point in all directions.
+		int startX = center.getX() - (radius - 1);
+		int endX = center.getX() + (radius - 1);
+		int startY = center.getY() - (radius - 1);
+		int endY = center.getY() + (radius - 1);
+		int startZ = center.getZ() - (radius - 1);
+		int endZ = center.getZ() + (radius - 1);
+		for(int x = startX; x <= endX; x++) {
+			for(int y = startY; y <= endY; y++) {
+				for(int z = startZ; z <= endZ; z++) {
+					addObject(obj, new Position(x, y, z));
+				}
+			}
+		}
+	}
+	
+	// Remove an object from a particular position
+	private void removeObject(Object obj, Position pos) {
+		if (grid.containsKey(pos)){
+			grid.get(pos).remove(obj);
+			if (grid.get(pos).isEmpty())
+				grid.remove(pos);
+			}
+	}
+	
+	// Remove an object with a radius from a particular position
+	private void removeObject(Object obj, Position pos, int radius) {
+		Position center = pos;
+		// doubly nested loop to go over positions for all three dimensions.
+		// note that the center position is included, so we subtract one 
+		// from the radius, and go from -(radius - 1) to +(radius - 1) units 
+		// around the center point in all directions.
+		int startX = center.getX() - (radius - 1);
+		int endX = center.getX() + (radius - 1);
+		int startY = center.getY() - (radius - 1);
+		int endY = center.getY() + (radius - 1);
+		int startZ = center.getZ() - (radius - 1);
+		int endZ = center.getZ() + (radius - 1);
+		for(int x = startX; x <= endX; x++) {
+			for(int y = startY; y <= endY; y++) {
+				for(int z = startZ; z <= endZ; z++) {
+					removeObject(obj, new Position(x, y, z));
+				}
+			}
+		}
+	}
+	
 	//Move an object from its old location in the grid to the new position
 	public void moveObject(Object obj, Position oldPos, Position newPos){
 		if (grid.containsKey(oldPos)){
@@ -99,6 +152,12 @@ public class Medium {
 				grid.remove(oldPos);
 			}
 		addObject(obj, newPos);
+	}
+	
+	// Move an object from its old location in the grid to the new position with a radius
+	public void moveObject(Object obj, Position oldPos, Position newPos, int radius) {
+		removeObject(obj, oldPos, radius);
+		addObject(obj, newPos, radius);
 	}
 	
 	//Checks to see if a particular position already has anything in it
@@ -133,6 +192,38 @@ public class Medium {
 		return false;
 	}
 	
+	// Checks to see if a particular space has a molecule in it
+	public boolean hasMolecule(Position center, Molecule mol) {
+		int radius = mol.getRadius();
+		// doubly nested loop to go over positions for all three dimensions.
+		// note that the center position is included, so we subtract one 
+		// from the radius, and go from -(radius - 1) to +(radius - 1) units 
+		// around the center point in all directions.
+		int startX = center.getX() - (radius - 1);
+		int endX = center.getX() + (radius - 1);
+		int startY = center.getY() - (radius - 1);
+		int endY = center.getY() + (radius - 1);
+		int startZ = center.getZ() - (radius - 1);
+		int endZ = center.getZ() + (radius - 1);
+		for(int x = startX; x <= endX; x++) {
+			for(int y = startY; y <= endY; y++) {
+				for(int z = startZ; z <= endZ; z++) {
+					Position pos = new Position(x, y, z);
+					if (!grid.containsKey(pos) || grid.get(pos).isEmpty())
+						return false;
+					else {
+						for (Object o : grid.get(pos)){
+							if (!o.equals(mol) && o instanceof Molecule)
+								//System.out.println("collision");
+								return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 	//Returns a list of everything located in a particular position
 	public ArrayList<Object> getObjectsAtPos(Position pos){
 		if (isOccupied(pos) || pos.equals(garbageSpot))
@@ -161,6 +252,38 @@ public class Medium {
 					NanoMachine nm = (NanoMachine)o;
 					if(nm.hasReceiver())
 						return nm;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public NanoMachine getRxNanoMachineAtPos(Position pos, int radius) {
+		Position center = pos;
+		// doubly nested loop to go over positions for all three dimensions.
+		// note that the center position is included, so we subtract one 
+		// from the radius, and go from -(radius - 1) to +(radius - 1) units 
+		// around the center point in all directions.
+		int startX = center.getX() - (radius - 1);
+		int endX = center.getX() + (radius - 1);
+		int startY = center.getY() - (radius - 1);
+		int endY = center.getY() + (radius - 1);
+		int startZ = center.getZ() - (radius - 1);
+		int endZ = center.getZ() + (radius - 1);
+		for(int x = startX; x <= endX; x++) {
+			for(int y = startY; y <= endY; y++) {
+				for(int z = startZ; z <= endZ; z++) {
+					if (!grid.containsKey(pos) || grid.get(pos).isEmpty())
+						return null;
+					else {
+						for (Object o : grid.get(pos)){
+							if (o instanceof NanoMachine ) {
+								NanoMachine nm = (NanoMachine)o;
+								if(nm.hasReceiver())
+									return nm;
+							}
+						}
+					}
 				}
 			}
 		}
