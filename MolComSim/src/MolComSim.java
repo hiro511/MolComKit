@@ -351,6 +351,10 @@ public class MolComSim {
 		medium.moveObject(obj, oldPos, newPos);
 	}
 	
+	public void moveObject(Object obj, Position oldPos, Position newPos, int radius){
+		medium.moveObject(obj, oldPos, newPos, radius);
+	}
+	
 	public boolean isOccupied(Position pos){
 		return medium.isOccupied(pos);
 	}
