@@ -23,7 +23,6 @@ public class MoleculeCreator {
 		this.source = src;
 		this.position = molReleasePsn;
 	}
-	
 
 	//TODO: Should this method be simplified with factories or helper methods?
 	//TODO: This entire method is crap.  Make helper methods or use some kind of design pattern
@@ -41,7 +40,7 @@ public class MoleculeCreator {
 					tempMol = new AcknowledgementMolecule(position, simulation, source, source.getReceiverMessageId(),molMoveType);
 				}
 				else if (molType.equals(MoleculeType.INFO)){
-					tempMol = new InformationMolecule(position, simulation, source, source.getTransmitterMessageId(), molMoveType);
+					tempMol = new InformationMolecule(position, mp.getRadius(), simulation, source, source.getTransmitterMessageId(), molMoveType);
 				}
 				else if (molType.equals(MoleculeType.NOISE)){
 					tempMol = new NoiseMolecule(position, simulation, molMoveType);
