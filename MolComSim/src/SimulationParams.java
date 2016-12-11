@@ -24,6 +24,7 @@ public class SimulationParams {
 	private int maxNumSteps = 100000;
 	private int numRetransmissions = 0;
 	private int retransmitWaitTime = 100;
+	private int numRequiredPackets = 1;
 	private boolean useCollisions = true;
 	private boolean decomposing = false;
 	private boolean useAcknowledgements = true;
@@ -170,6 +171,9 @@ public class SimulationParams {
 								new Scanner(
 									line.substring(line.indexOf(" ")))));				
 			}
+			else if(line.startsWith("numRequiredPackets")){
+				numRequiredPackets = Integer.parseInt(param);
+			}
 			else if(line.startsWith("numMessages")){
 				numMessages = Integer.parseInt(param);				
 			}
@@ -298,6 +302,10 @@ public class SimulationParams {
 
 	public int getRetransmitWaitTime() {
 		return retransmitWaitTime;
+	}
+	
+	public int getNumRequiredPackets() {
+		return numRequiredPackets;
 	}
 
 	public boolean isUsingCollisions() {

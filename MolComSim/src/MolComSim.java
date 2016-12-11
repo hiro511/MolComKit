@@ -30,6 +30,9 @@ public class MolComSim {
 	private boolean lastMsgCompleted;
 	private int numMessages;
 	
+	//Number of packets are required when making data
+	private int numRequiredPackets;
+	
 	//This instance of the Molecular Communication Simulation
 	static MolComSim molComSim;
 
@@ -113,6 +116,10 @@ public class MolComSim {
 	
 	public int getNumMessages(){
 		return simParams.getNumMessages();
+	}
+	
+	public int getNumRequiredPackets() {
+		return simParams.getNumRequiredPackets();
 	}
 
 	/** Creates the medium in which the simulation takes place
@@ -276,6 +283,39 @@ public class MolComSim {
 		if((outputFile != null)  && (!simParams.isBatchRun())) {
 			try {
 				outputFile.write(completedMessage);
+			} catch (IOException e) {
+				System.out.println("Error: unable to write to file: " + simParams.getOutputFileName());
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private String convertNumIntoOrdinal(int num) {
+		String unit = "";
+		switch (num % 10) {
+		case 1:
+			unit = "st";
+			break;
+		case 2:
+			unit = "nd";
+			break;
+		default:
+			unit = "th";
+			break;
+		}
+		return Integer.toString(num) + unit;
+	}
+	
+	public void recievedMessage(int msgId,int numRecievedPackets) {
+		
+		String recievedMessage = "Recieved message: " + (msgId + 1) + "-" +
+					numRecievedPackets + ", at step: " + simStep + "\n";
+		if(!simParams.isBatchRun()) { 
+			System.out.print(recievedMessage);
+		}
+		if((outputFile != null)  && (!simParams.isBatchRun())) {
+			try {
+				outputFile.write(recievedMessage);
 			} catch (IOException e) {
 				System.out.println("Error: unable to write to file: " + simParams.getOutputFileName());
 				e.printStackTrace();

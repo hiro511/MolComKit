@@ -291,6 +291,8 @@ public class NanoMachine {
 
 		private MolComSim simulation;
 		private int currMsgId;
+		private int numRequiredPackets = 0;
+		private int numRecievedPackets;
 		private int retransmissionsLeft;
 		private MoleculeCreator moleculeCreator;
 		private NanoMachine nanoMachine;
@@ -311,6 +313,7 @@ public class NanoMachine {
 			this.molReleasePsn = molReleasePsn;
 			this.nanoMachine = nm;
 			this.simulation = sim;
+			this.numRequiredPackets = this.simulation.getNumRequiredPackets();
 			if(this.simulation.isUsingAcknowledgements())
 			{
 				this.moleculeCreator = new MoleculeCreator(mpl, simulation, nanoMachine, molReleasePsn);
@@ -356,14 +359,21 @@ public class NanoMachine {
 		public void receiveMolecule(Molecule m) {
 			neverReceivedAnyInfoMols = false; // we have received at least one information molecule
 			if(m.getMsgId() == currMsgId + 1){
-				currMsgId++;		
-				lastCommunicationStatus = LAST_COMMUNICATION_SUCCESS;
-				if(simulation.isUsingAcknowledgements()) {
-					createMoleculesDelayed = true;
-					retransmissionsLeft =  simulation.getNumRetransmissions();
-				} 
-				else {
-					simulation.completedMessage(currMsgId);
+				
+				numRecievedPackets++;
+				simulation.recievedMessage(currMsgId, numRecievedPackets);
+				
+				if(numRecievedPackets >= numRequiredPackets) {
+					currMsgId++;
+					lastCommunicationStatus = LAST_COMMUNICATION_SUCCESS;
+					
+					if(simulation.isUsingAcknowledgements()) {
+						createMoleculesDelayed = true;
+						retransmissionsLeft =  simulation.getNumRetransmissions();
+					} 
+					else {
+						simulation.completedMessage(currMsgId);
+					}
 				}
 			}
 			else if (simulation.isUsingAcknowledgements() && (retransmissionsLeft-- > 0)) {

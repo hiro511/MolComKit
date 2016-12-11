@@ -1,6 +1,5 @@
 import java.util.Scanner;
 
-import com.sun.org.apache.xpath.internal.axes.SelfIteratorNoPredicate;
 
 /** Stores the parameters needed
  * to create a particular type of molecule
