@@ -13,7 +13,7 @@ local.properties
 input/
 
 # Output files
-result/
+results/
 
 # Eclipse Core
 .project
