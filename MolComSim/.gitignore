@@ -9,6 +9,12 @@ local.properties
 .loadpath
 .recommenders
 
+# Parameter Settings
+input/
+
+# Output files
+result/
+
 # Eclipse Core
 .project
 
