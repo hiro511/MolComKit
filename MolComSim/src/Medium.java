@@ -193,6 +193,7 @@ public class Medium {
 	}
 	
 	// Checks to see if a particular space has a molecule in it
+	static Random random = new Random();
 	public boolean hasMolecule(Position center, Molecule mol) {
 		int radius = mol.getRadius();
 		// doubly nested loop to go over positions for all three dimensions.
@@ -209,13 +210,18 @@ public class Medium {
 			for(int y = startY; y <= endY; y++) {
 				for(int z = startZ; z <= endZ; z++) {
 					Position pos = new Position(x, y, z);
-					if (!grid.containsKey(pos) || grid.get(pos).isEmpty())
+					if (!grid.containsKey(pos) || grid.get(pos).isEmpty()){
 						return false;
-					else {
+					}else {
 						for (Object o : grid.get(pos)){
-							if (!o.equals(mol) && o instanceof Molecule)
-								//System.out.println("collision");
-								return true;
+							if (!o.equals(mol) && o instanceof Molecule){
+								// a diameter has to be changed
+//								double diameter = 0.069; // n=100, L=0.1224
+//								double diameter = 0.25;  // n=10, L=1.04
+								double diameter = 1.0;   // n=1, L=10.2
+//								return random.nextInt(100) < grid.get(pos).size() ? true : false;
+								return random.nextInt((int)(1.0 / Math.pow(diameter, 3.0))) < grid.get(pos).size() ? true : false;
+							}
 						}
 					}
 				}

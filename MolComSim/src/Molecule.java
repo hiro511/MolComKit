@@ -10,6 +10,7 @@ public abstract class Molecule {
 
 	private Position position;
 	private int radius;
+	private int numSequence;
 	private MovementController movementController;
 	protected MolComSim simulation;
 	private MoleculeMovementType moleculeMovementType;
@@ -30,9 +31,10 @@ public abstract class Molecule {
 		this.moleculeMovementType = molMvType;
 	}
 	
-	protected Molecule(Position psn, int radius, MolComSim sim, MoleculeMovementType molMvType) {
+	protected Molecule(Position psn, int radius, int numSeq, MolComSim sim, MoleculeMovementType molMvType) {
 		this(psn, sim, molMvType);
 		this.radius = radius;
+		this.numSequence = numSeq;
 	}
 	
 	//Moves the molecule as defined by its movementController
@@ -44,6 +46,10 @@ public abstract class Molecule {
 	
 	public int getRadius() {
 		return radius;
+	}
+	
+	public int getNumSequence() {
+		return numSequence;
 	}
 
 	public void setMovementController(MovementController mc) {

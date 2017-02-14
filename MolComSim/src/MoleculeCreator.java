@@ -30,6 +30,7 @@ public class MoleculeCreator {
 	// communications were successful or not for adaptive changes.
 	public void createMolecules(int lastTransmissionStatus) { 
 		ArrayList<Molecule> newMols = new ArrayList<Molecule>();
+		int numSeq = 0;
 		for (MoleculeParams mp : molParams){
 			MoleculeType molType = mp.getMoleculeType();
 			MoleculeMovementType molMoveType = mp.getMoleculeMovementType();
@@ -40,7 +41,7 @@ public class MoleculeCreator {
 					tempMol = new AcknowledgementMolecule(position, simulation, source, source.getReceiverMessageId(),molMoveType);
 				}
 				else if (molType.equals(MoleculeType.INFO)){
-					tempMol = new InformationMolecule(position, mp.getRadius(), simulation, source, source.getTransmitterMessageId(), molMoveType);
+					tempMol = new InformationMolecule(position, mp.getRadius(), ++numSeq, simulation, source, source.getTransmitterMessageId(), molMoveType);
 				}
 				else if (molType.equals(MoleculeType.NOISE)){
 					tempMol = new NoiseMolecule(position, simulation, molMoveType);

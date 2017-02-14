@@ -25,8 +25,10 @@ public class SimulationParams {
 	private int numRetransmissions = 0;
 	private int retransmitWaitTime = 100;
 	private int numRequiredPackets = 1;
+	private double FECrate = 0.0;
 	private boolean useCollisions = true;
 	private boolean decomposing = false;
+	private boolean assembling = false;
 	private boolean useAcknowledgements = true;
 	private ArrayList<MoleculeParams> moleculeParams = new ArrayList<MoleculeParams>();
 	private int molRandMoveX = 1;
@@ -189,6 +191,9 @@ public class SimulationParams {
 			else if(line.startsWith("decomposing")){
 				decomposing = (Integer.parseInt(param) == 1) ? true : false;
 			}
+			else if(line.startsWith("assembling")){
+				assembling = (Integer.parseInt(param) == 1) ? true : false;
+			}
 			else if(line.startsWith("useAcknowledgements")){
 				useAcknowledgements = (Integer.parseInt(param) == 1) ? true : false;
 			}
@@ -197,7 +202,11 @@ public class SimulationParams {
 			}
 			else if(line.startsWith("probDRail")){
 				probDRail = Double.parseDouble(param);				
-			} else if (line.startsWith("moleculeParams")) {
+			}
+			else if(line.startsWith("FECrate")) {
+				FECrate = Double.parseDouble(param);
+			}
+			else if (line.startsWith("moleculeParams")) {
 				moleculeParams.add(
 						new MoleculeParams(
 								new Scanner(
@@ -307,6 +316,10 @@ public class SimulationParams {
 	public int getNumRequiredPackets() {
 		return numRequiredPackets;
 	}
+	
+	public double getFECrate() {
+		return FECrate;
+	}
 
 	public boolean isUsingCollisions() {
 		return useCollisions;
@@ -319,6 +332,10 @@ public class SimulationParams {
 
 	public boolean isUsingAcknowledgements() {
 		return useAcknowledgements;
+	}
+	
+	public boolean isAssembling() {
+		return assembling;
 	}
 
 	public int getMolRandMoveX() {

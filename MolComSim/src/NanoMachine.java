@@ -212,25 +212,15 @@ public class NanoMachine {
 					lastCommunicationStatus = LAST_COMMUNICATION_FAILURE;
 					if(retransmissionsLeft-- > 0) {
 						createMolecules();
-					} 
+					}
 				} else { // time to send out new molecules, not using acknowledgements,
 					    // so start new message.
-					lastCommunicationStatus = LAST_COMMUNICATION_SUCCESS;
-					if (currMsgId < simulation.getNumMessages()) {
-						++currMsgId;
-						if(!getSimulation().getSimParams().isBatchRun()) {
-							String newMessageMessage = "Starting new message: " + currMsgId + " at step: " + 
-									getSimulation().getSimStep() + "\n";
-							System.out.print(newMessageMessage);
-							try {
-								getSimulation().getOutputFile().write(newMessageMessage);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
+					lastCommunicationStatus = LAST_COMMUNICATION_FAILURE;
+					if (retransmissionsLeft-- > 0) {
+						String newMessageMessage = "Starting new message \n";
+						System.out.print(newMessageMessage);
+						createMolecules();
 					}
-					createMolecules();
 				}
 			} 
 		}
@@ -292,7 +282,9 @@ public class NanoMachine {
 		private MolComSim simulation;
 		private int currMsgId;
 		private int numRequiredPackets = 0;
-		private int numRecievedPackets;
+		private int numRecievedPackets = 0;
+		private double FECrate = 0.0;
+		private boolean isReceived[] = null;
 		private int retransmissionsLeft;
 		private MoleculeCreator moleculeCreator;
 		private NanoMachine nanoMachine;
@@ -308,12 +300,21 @@ public class NanoMachine {
 
 		// To track communication status for adaptive change
 		private int lastCommunicationStatus = NO_PREVIOUS_COMMUNICATION;
+		
+		private void initIsReceived() {
+			for (int index = 0; index < isReceived.length; index++){
+				isReceived[index] = false;
+			}
+		}
 
 		public Receiver(NanoMachine nm, Position molReleasePsn, ArrayList<MoleculeParams> mpl, MolComSim sim) {
 			this.molReleasePsn = molReleasePsn;
 			this.nanoMachine = nm;
 			this.simulation = sim;
+			this.FECrate = this.simulation.getFECrate();
 			this.numRequiredPackets = this.simulation.getNumRequiredPackets();
+			this.isReceived = new boolean[(int) (this.numRequiredPackets * (this.FECrate + 1.0))];
+			initIsReceived();
 			if(this.simulation.isUsingAcknowledgements())
 			{
 				this.moleculeCreator = new MoleculeCreator(mpl, simulation, nanoMachine, molReleasePsn);
@@ -349,6 +350,47 @@ public class NanoMachine {
 				createMolecules();
 			} 
 		}
+		
+		private void printNotRecievedPackets(){
+			int index;
+			for(index = 0; index < isReceived.length; index++){
+				if(!isReceived[index]){
+					System.out.println(index+1);
+				}
+			}
+		}
+		
+		// TODO improve
+		private boolean canAssemblePackets(Molecule m) {
+			if (m instanceof InformationMolecule && numRecievedPackets >= numRequiredPackets) {
+				if (FECrate == 0.0) {
+					for(int index = 0; index < isReceived.length; index++) {
+						if (!isReceived[index]){
+							return false;
+						}
+					}
+					return true;
+				}
+				int numFECPackets = (int) (numRequiredPackets * FECrate);
+				int numPacketsInBlock = (numRequiredPackets / numFECPackets) + 1;
+				int count = 0;
+				for(int index = 0; index < isReceived.length; index++){
+					if(isReceived[index]){
+						count++;
+					}
+					if((index + 1) % numPacketsInBlock == 0){
+						if(count < (numPacketsInBlock - 1)){
+							return false;
+						}
+						count = 0;
+					}
+				}
+			}
+			else{
+				return false;
+			}
+			return true;
+		}
 
 		/**
 		 * Receive molecule and tell simulation this message has been received,
@@ -358,12 +400,15 @@ public class NanoMachine {
 		 */
 		public void receiveMolecule(Molecule m) {
 			neverReceivedAnyInfoMols = false; // we have received at least one information molecule
+			if (m instanceof InformationMolecule && simulation.assembling()) {
+				isReceived[m.getNumSequence()-1] = true;
+			}
 			if(m.getMsgId() == currMsgId + 1){
-				
 				numRecievedPackets++;
 				simulation.recievedMessage(currMsgId, numRecievedPackets);
-				
-				if(numRecievedPackets >= numRequiredPackets) {
+				// 
+				if((simulation.assembling() && canAssemblePackets(m)) || 
+						(!simulation.assembling() && numRecievedPackets >= numRequiredPackets)) {
 					currMsgId++;
 					lastCommunicationStatus = LAST_COMMUNICATION_SUCCESS;
 					

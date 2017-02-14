@@ -229,6 +229,7 @@ public class MolComSim {
 					" out of " + simParams.getNumMessages() + "\n";
 		} else {
 			endMessage += "All " + simParams.getNumMessages() + " messages completed.\n";
+			endMessage += "Collision Count:" + CollisionCounter.getInstance().getCount() + "\n";
 		}
 		
 		if(!simParams.isBatchRun()) {
@@ -369,6 +370,14 @@ public class MolComSim {
 	
 	public boolean decomposing(){
 		return simParams.isDecomposing();
+	}
+	
+	public boolean assembling(){
+		return simParams.isAssembling();
+	}
+	
+	public double getFECrate() {
+		return simParams.getFECrate();
 	}
 	
 	public int getRetransmitWaitTime(){
