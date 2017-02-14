@@ -26,6 +26,7 @@ public class SimulationParams {
 	private int retransmitWaitTime = 100;
 	private int numRequiredPackets = 1;
 	private double FECrate = 0.0;
+	private double probCollisions = 0.0;
 	private boolean useCollisions = true;
 	private boolean decomposing = false;
 	private boolean assembling = false;
@@ -206,6 +207,9 @@ public class SimulationParams {
 			else if(line.startsWith("FECrate")) {
 				FECrate = Double.parseDouble(param);
 			}
+			else if(line.startsWith("probCollisions")) {
+				probCollisions = Double.parseDouble(param);
+			}
 			else if (line.startsWith("moleculeParams")) {
 				moleculeParams.add(
 						new MoleculeParams(
@@ -319,6 +323,10 @@ public class SimulationParams {
 	
 	public double getFECrate() {
 		return FECrate;
+	}
+	
+	public double getProbCollisions() {
+		return probCollisions;
 	}
 
 	public boolean isUsingCollisions() {

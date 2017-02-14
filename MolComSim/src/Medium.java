@@ -17,6 +17,7 @@ public class Medium {
 	private HashMap<Position, ArrayList<Object>> grid;
 	//garbageSpot is located outside of the bounds of the medium, where molecules go to die
 	private final Position garbageSpot;
+	private double probCollisioins;
 
 	public Medium(int l, int h, int w, ArrayList<MoleculeParams> noiseMoleculeParams, MolComSim sim) {
 		this.length = l;
@@ -25,6 +26,7 @@ public class Medium {
 		this.simulation = sim;
 		this.mCreator = new NoiseMoleculeCreator(noiseMoleculeParams, this.simulation);
 		this.grid = new HashMap<Position, ArrayList<Object>>();
+		this.probCollisioins = sim.getSimParams().getProbCollisions();
 		garbageSpot = new Position(length*2, height*2, width*2);
 		grid.put(garbageSpot, new ArrayList<Object>());
 	}
@@ -215,12 +217,7 @@ public class Medium {
 					}else {
 						for (Object o : grid.get(pos)){
 							if (!o.equals(mol) && o instanceof Molecule){
-								// a diameter has to be changed
-//								double diameter = 0.069; // n=100, L=0.1224
-//								double diameter = 0.25;  // n=10, L=1.04
-								double diameter = 1.0;   // n=1, L=10.2
-//								return random.nextInt(100) < grid.get(pos).size() ? true : false;
-								return random.nextInt((int)(1.0 / Math.pow(diameter, 3.0))) < grid.get(pos).size() ? true : false;
+								return random.nextInt((int)(1.0 / probCollisioins)) < grid.get(pos).size() ? true : false;
 							}
 						}
 					}
