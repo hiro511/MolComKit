@@ -26,6 +26,7 @@ public class SimulationParams {
 	private int retransmitWaitTime = 100;
 	private int numRequiredPackets = 1;
 	private double FECrate = 0.0;
+	private FECMethodType FECMethod = FECMethodType.NONE;
 	private double probCollisions = 0.0;
 	private boolean useCollisions = true;
 	private boolean decomposing = false;
@@ -207,6 +208,9 @@ public class SimulationParams {
 			else if(line.startsWith("FECrate")) {
 				FECrate = Double.parseDouble(param);
 			}
+			else if(line.startsWith("FECMethod")) {
+				FECMethod = FECMethod.getFECMethodType(param);
+			}
 			else if(line.startsWith("probCollisions")) {
 				probCollisions = Double.parseDouble(param);
 			}
@@ -323,6 +327,10 @@ public class SimulationParams {
 	
 	public double getFECrate() {
 		return FECrate;
+	}
+	
+	public FECMethodType getFECMethod() {
+		return FECMethod;
 	}
 	
 	public double getProbCollisions() {

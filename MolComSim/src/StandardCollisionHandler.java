@@ -24,7 +24,6 @@ public class StandardCollisionHandler extends CollisionDecorator{
 //		if (simulation.getMedium().isOccupied(nextPos)){
 		if (simulation.getMedium().hasMolecule(nextPos, mol)){
 			CollisionCounter.getInstance().up();
-			System.out.println("collisions");
 			return mol.getPosition();
 		}
 		
