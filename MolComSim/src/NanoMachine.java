@@ -171,6 +171,7 @@ public class NanoMachine {
 		private int countdown;
 		private boolean createMoleculesDelayed = false;
 		private Position molReleasePsn;
+		private ForwardErrorCorrection FEC;
 		
 		// for intermediate nodes, track the messages we have retransmitted so we 
 		// do not retransmit the same message multiple times.
@@ -185,6 +186,7 @@ public class NanoMachine {
 			this.simulation = sim;
 			this.moleculeCreator = new MoleculeCreator(mpl, this.simulation, this.nanoMachine, this.molReleasePsn);
 			this.retransmissionsLeft =  this.simulation.getNumRetransmissions();
+			this.FEC = this.simulation.getFEC();
 		}
 
 		// in order to have intermediate nodes no retransmit multiple times for each molecule.
@@ -304,11 +306,8 @@ public class NanoMachine {
 			this.molReleasePsn = molReleasePsn;
 			this.nanoMachine = nm;
 			this.simulation = sim;
-			FECMethodType method = sim.getSimParams().getFECMethod();
-			double rate = sim.getSimParams().getFECrate();
-			int numRequiredPackets = sim.getSimParams().getNumRequiredPackets();
-			this.FEC = FECFactory.create(method, rate, numRequiredPackets);
 			this.numRequiredPackets = this.simulation.getNumRequiredPackets();
+			this.FEC = this.simulation.getFEC();
 			if(this.simulation.isUsingAcknowledgements())
 			{
 				this.moleculeCreator = new MoleculeCreator(mpl, simulation, nanoMachine, molReleasePsn);
@@ -359,7 +358,7 @@ public class NanoMachine {
 			if(m.getMsgId() == currMsgId + 1){
 				numRecievedPackets++;
 				simulation.recievedMessage(currMsgId, numRecievedPackets);
-				if((simulation.assembling() && FEC.canAssemble()) || 
+				if((simulation.assembling() && FEC.canDecode()) || 
 						(!simulation.assembling() && numRecievedPackets >= numRequiredPackets)) {
 					currMsgId++;
 					lastCommunicationStatus = LAST_COMMUNICATION_SUCCESS;

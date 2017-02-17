@@ -1,13 +1,14 @@
 
 public class FECFactory {
 
-	static public ForwardErrorCorrection create(FECMethodType method, double rate, int numRequiredPackets) {
-		switch (method) {
+	static public ForwardErrorCorrection create(FECParams params, int numRequiredPackets) {
+		switch (params.getFECMethod()) {
 		case PARITYCHECK:
-			return new ParityCheck(rate, numRequiredPackets);
-			
+			return new ParityCheck(params, numRequiredPackets);
 		case NONE:
-			return null;
+			return new NullFEC(params, numRequiredPackets);
+		default:
+			break;
 		}
 		return null;
 	}

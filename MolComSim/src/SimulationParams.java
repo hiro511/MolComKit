@@ -20,13 +20,12 @@ public class SimulationParams {
 	private ArrayList<NanoMachineParam> receiverParams = new ArrayList<NanoMachineParam>();
 	private ArrayList<IntermediateNodeParam> intermediateNodeParams = new ArrayList<IntermediateNodeParam>();
 	private ArrayList<MicrotubuleParams> microtubuleParams = new ArrayList<MicrotubuleParams>();
+	private FECParams fecParams;
 	private int numMessages = 1;
 	private int maxNumSteps = 100000;
 	private int numRetransmissions = 0;
 	private int retransmitWaitTime = 100;
 	private int numRequiredPackets = 1;
-	private double FECrate = 0.0;
-	private FECMethodType FECMethod = FECMethodType.NONE;
 	private double probCollisions = 0.0;
 	private boolean useCollisions = true;
 	private boolean decomposing = false;
@@ -205,11 +204,10 @@ public class SimulationParams {
 			else if(line.startsWith("probDRail")){
 				probDRail = Double.parseDouble(param);				
 			}
-			else if(line.startsWith("FECrate")) {
-				FECrate = Double.parseDouble(param);
-			}
-			else if(line.startsWith("FECMethod")) {
-				FECMethod = FECMethod.getFECMethodType(param);
+			else if(line.startsWith("FEC")) {
+				fecParams = new FECParams(
+								new Scanner(
+										line.substring(line.indexOf(" "))));
 			}
 			else if(line.startsWith("probCollisions")) {
 				probCollisions = Double.parseDouble(param);
@@ -312,6 +310,10 @@ public class SimulationParams {
 	public ArrayList<MicrotubuleParams> getMicrotubuleParams() {
 		return microtubuleParams;
 	}
+	
+	public FECParams getFECParams() {
+		return fecParams;
+	}
 
 	public int getNumRetransmissions() {
 		return numRetransmissions;
@@ -323,14 +325,6 @@ public class SimulationParams {
 	
 	public int getNumRequiredPackets() {
 		return numRequiredPackets;
-	}
-	
-	public double getFECrate() {
-		return FECrate;
-	}
-	
-	public FECMethodType getFECMethod() {
-		return FECMethod;
 	}
 	
 	public double getProbCollisions() {

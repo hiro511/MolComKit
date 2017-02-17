@@ -11,10 +11,12 @@ public class MoleculeCreator {
 	protected MolComSim simulation;
 	private NanoMachine source;
 	private Position position;
+	private ForwardErrorCorrection FEC;
 
 	public MoleculeCreator(ArrayList<MoleculeParams> mParams, MolComSim sim) {
 		this.molParams = mParams;
 		this.simulation = sim;
+		this.FEC = this.simulation.getFEC();
 	}
 
 	public MoleculeCreator(ArrayList<MoleculeParams> mParams, MolComSim sim, NanoMachine src, Position molReleasePsn) {
@@ -22,6 +24,7 @@ public class MoleculeCreator {
 		this.simulation = sim;
 		this.source = src;
 		this.position = molReleasePsn;
+		this.FEC = this.simulation.getFEC();
 	}
 
 	//TODO: Should this method be simplified with factories or helper methods?
@@ -35,6 +38,7 @@ public class MoleculeCreator {
 			MoleculeType molType = mp.getMoleculeType();
 			MoleculeMovementType molMoveType = mp.getMoleculeMovementType();
 			mp.applyAdaptiveChange(lastTransmissionStatus); // make changes to num molecules based on communication success.
+			mp = FEC.encode(mp); // encode a molecule
 			for (int i = 0; i < mp.getNumMolecules(); i++){
 				Molecule tempMol;
 				if (molType.equals(MoleculeType.ACK)){

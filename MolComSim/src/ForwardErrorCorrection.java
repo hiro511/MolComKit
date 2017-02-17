@@ -1,29 +1,23 @@
-import java.util.Arrays;
 
 public abstract class ForwardErrorCorrection {
-	protected double rate;
-	protected int numPackets;
 	protected int numRequiredPackets;
-	protected int numParityPackets;
-	protected int numPacketsInBlock;
-	protected boolean isReceived[] = null;
 	protected int numRecievedPackets = 0;
 	
-	public ForwardErrorCorrection(double rate, int numRequiredPackets) {
-		this.rate = rate;
+	public ForwardErrorCorrection(FECParams params, int numRequiredPackets) {
 		this.numRequiredPackets = numRequiredPackets;
-		this.numParityPackets = (int) (numRequiredPackets * rate);
-		this.numPacketsInBlock = (int) (1 / rate) + 1;
-		this.numPackets = (int)(numRequiredPackets * (rate + 1.0));
-		this.isReceived = new boolean[this.numPackets];
-		Arrays.fill(isReceived, false);
 	}
 	
-	abstract boolean canAssemble();
+	// return if it is possible to decode.
+	abstract boolean canDecode();
+	// encode an information molecule based on moleculeParams
+	// return modified moleculeParams
+	abstract MoleculeParams encode(MoleculeParams molParams);
+	// implement a process when an information molecule received
+	abstract void recieve(Molecule m);
 	
-	public void add(Molecule m) {
+	final public void add(Molecule m) {
 		numRecievedPackets++;
-		isReceived[m.getNumSequence()-1] = true;
+		recieve(m);
 	}
 	
 	public int getNumRecievedPackets() {

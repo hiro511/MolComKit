@@ -30,8 +30,11 @@ public class MolComSim {
 	private boolean lastMsgCompleted;
 	private int numMessages;
 	
-	//Number of packets are required when making data
-	private int numRequiredPackets;
+//	//Number of packets are required when making data
+//	private int numRequiredPackets;
+	
+	// Forward Error Correction
+	private ForwardErrorCorrection FEC;
 	
 	//This instance of the Molecular Communication Simulation
 	static MolComSim molComSim;
@@ -61,6 +64,8 @@ public class MolComSim {
 		if((simParams.getOutputFileName() != null) && (!simParams.isBatchRun())) {
 			outputFile = new FileWriter(simParams.getOutputFileName());
 		}
+		
+		FEC = FECFactory.create(simParams.getFECParams(), simParams.getNumRequiredPackets());
 		microtubules = new ArrayList<Microtubule>();
 		nanoMachines = new ArrayList<NanoMachine>();
 		transmitters = new ArrayList<NanoMachine>();
@@ -376,10 +381,6 @@ public class MolComSim {
 		return simParams.isAssembling();
 	}
 	
-	public double getFECrate() {
-		return simParams.getFECrate();
-	}
-	
 	public int getRetransmitWaitTime(){
 		return simParams.getRetransmitWaitTime();
 	}
@@ -421,5 +422,8 @@ public class MolComSim {
 		return outputFile;
 	}
 
+	public ForwardErrorCorrection getFEC() {
+		return FEC;
+	}
 
 }
