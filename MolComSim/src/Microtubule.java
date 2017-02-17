@@ -35,7 +35,7 @@ public class Microtubule {
 	// distance an individual molecule travels along a microtubule in a single step.
 	public DoublePosition getDirectionVector(){
 		if (directionVector == null){
-			int vel = simulation.getSimParams().getVelRail();
+			double vel = simulation.getSimParams().getVelRail();
 			int x1 = startPoint.getX();
 			int y1 = startPoint.getY();
 			int z1 = startPoint.getZ();
@@ -62,7 +62,7 @@ public class Microtubule {
 	// from MinusEndPoint to PlusEndPoint of size 1 (the unit vector)
 	public DoublePosition getUnitVector(){
 		DoublePosition unitVector;
-		int vel = simulation.getSimParams().getVelRail();
+		double vel = simulation.getSimParams().getVelRail();
 		int x1 = startPoint.getX();
 		int y1 = startPoint.getY();
 		int z1 = startPoint.getZ();

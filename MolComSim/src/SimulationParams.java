@@ -35,7 +35,7 @@ public class SimulationParams {
 	private int molRandMoveX = 1;
 	private int molRandMoveY = 1;
 	private int molRandMoveZ = 1;
-	private int velRail = 1; 
+	private double velRail = 1.0;
 	private double probDRail = 0.0;
 	private boolean batchRun; // store single result (last simulation step used) in batch file, append to file if already there.
 	
@@ -199,7 +199,7 @@ public class SimulationParams {
 				useAcknowledgements = (Integer.parseInt(param) == 1) ? true : false;
 			}
 			else if(line.startsWith("velRail")){
-				velRail = Integer.parseInt(param);				
+				velRail = Double.parseDouble(param);
 			}
 			else if(line.startsWith("probDRail")){
 				probDRail = Double.parseDouble(param);				
@@ -360,7 +360,7 @@ public class SimulationParams {
 		return molRandMoveZ;
 	}
 
-	public int getVelRail() {
+	public double getVelRail() {
 		return velRail;
 	}
 
